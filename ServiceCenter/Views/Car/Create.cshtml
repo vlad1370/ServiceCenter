@@ -1,0 +1,37 @@
+﻿@model Car
+@{
+    ViewData["Title"] = "Добавить автомобиль";
+    var models = ViewData["ModelId"] as SelectList;
+    var customers = ViewData["CustomerId"] as SelectList;
+}
+
+<h2>Добавить автомобиль</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="SerialNumber" class="control-label">Серийный номер</label>
+        <input asp-for="SerialNumber" class="form-control" />
+        <span asp-validation-for="SerialNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ModelId" class="control-label">Модель</label>
+        <select asp-for="ModelId" class="form-control" asp-items="models">
+            <option value="">-- Выберите модель --</option>
+        </select>
+        <span asp-validation-for="ModelId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CustomerId" class="control-label">Владелец</label>
+        <select asp-for="CustomerId" class="form-control" asp-items="customers">
+            <option value="">-- Выберите владельца --</option>
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Создать" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+    </div>
+</form>

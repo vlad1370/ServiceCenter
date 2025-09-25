@@ -1,0 +1,158 @@
+﻿@using ServiceCenter.ViewModels
+@model OrderCreateViewModel
+@{
+    ViewData["Title"] = "Создать заказ";
+}
+
+<h2>Создать новый заказ</h2>
+
+<form asp-action="Create">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Основная информация</h4>
+
+            <div class="form-group">
+                <label asp-for="OrderDate" class="control-label">Дата заказа</label>
+                <input asp-for="OrderDate" class="form-control" type="datetime-local" />
+                <span asp-validation-for="OrderDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CarSerialNumber" class="control-label">Серийный номер автомобиля</label>
+                <input asp-for="CarSerialNumber" class="form-control" list="serialNumbers" id="carSerialNumberInput"/>
+                <datalist id="serialNumbers">
+                    @foreach (var num in ViewBag.AvailableSerialNumbers)
+                    {
+                        <option value="@num"></option>
+                    }
+                </datalist>
+                <span asp-validation-for="CarSerialNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CustomerId" class="control-label">Клиент</label>
+                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.Customers">
+                    <option value="">-- Выберите клиента --</option>
+                </select>
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="EmployeeId" class="control-label">Сотрудник</label>
+                <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.Employees">
+                    <option value="">-- Выберите сотрудника --</option>
+                </select>
+                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Детали заказа</h4>
+
+            <div class="form-group">
+                <label asp-for="SelectedFaultIds" class="control-label">Неисправности</label>
+                <select asp-for="SelectedFaultIds" class="form-control" multiple="multiple" id="faultsSelect" disabled/>
+                <span asp-validation-for="SelectedFaultIds" class="text-danger"></span>
+                <small class="form-text text-muted">Удерживайте Ctrl для выбора нескольких неисправностей</small>
+                <div id="faultsMessage" class="text-muted mt-2"></div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TotalPrice" class="control-label">Общая стоимость</label>
+                <input asp-for="TotalPrice" class="form-control" />
+                <span asp-validation-for="TotalPrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-check">
+                <input asp-for="HasWarranty" class="form-check-input" />
+                <label asp-for="HasWarranty" class="form-check-label">Гарантийный ремонт</label>
+            </div>
+
+            <div class="form-group" id="warrantyGroup" style="display: none;">
+                <label asp-for="WarrantyPeriodDays" class="control-label">Срок гарантии (дней)</label>
+                <input asp-for="WarrantyPeriodDays" class="form-control" />
+                <span asp-validation-for="WarrantyPeriodDays" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Создать заказ" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Показ/скрытие поля гарантии
+            $('#HasWarranty').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#warrantyGroup').show();
+                } else {
+                    $('#warrantyGroup').hide();
+                }
+            });
+
+            // Автоматический запуск при загрузке
+            $('#HasWarranty').trigger('change');
+
+            $('#faultsSelect').html('<option value="">-- Введите серийный номер --</option>').prop('disabled', true);
+
+        // Обработка изменения серийного номера
+        $('#carSerialNumberInput').on('input', function () {
+            var serialNumber = $(this).val().trim();
+
+            if (serialNumber.length == 17) { // 17 символов для запроса
+                loadFaults(serialNumber);
+            }
+        });
+
+        function loadFaults(serialNumber) {
+            $('#faultsMessage').html('<i class="fas fa-spinner fa-spin"></i> Загрузка неисправностей...');
+            $('#faultsSelect').prop('disabled', true);
+
+            // Простой GET запрос
+            $.ajax({
+                url: '/Order/GetFaultsByCar',
+                type: 'GET',
+                data: { serialNumber: serialNumber },
+                success: function(data) {
+                    var select = $('#faultsSelect');
+                    select.empty(); // Очищаем полностью
+
+                    if (data.success && data.faults && data.faults.length > 0) {
+                        // Добавляем options
+                        $.each(data.faults, function() {
+                            select.append($('<option>', {
+                                value: this.id,
+                                text: this.text
+                            }));
+                        });
+
+                        select.prop('disabled', false);
+
+                    } else {
+                        // Если нет неисправностей или ошибка
+                        select.append($('<option>', {
+                            value: '',
+                            text: '-- Нет доступных неисправностей --'
+                        }));
+                        $('#faultsMessage').html(data.message || 'Для этого автомобиля нет характерных неисправностей');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#faultsSelect').html('<option value="">-- Ошибка загрузки --</option>');
+                    $('#faultsMessage').html('Ошибка сервера: ' + error);
+                }
+            });
+        }
+
+        // Если уже есть серийный номер (при возврате с ошибкой)
+        var initialSerial = $('#carSerialNumberInput').val();
+        if (initialSerial && initialSerial.length == 17) {
+            loadFaults(initialSerial);
+        }
+        });
+    </script>
+}

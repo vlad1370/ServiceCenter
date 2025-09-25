@@ -1,0 +1,27 @@
+﻿@model Car
+@{
+    ViewData["Title"] = "Подробности автомобиля";
+}
+
+<h2>Подробности автомобиля</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Серийный номер:</dt>
+        <dd class="col-sm-9">@Model.SerialNumber</dd>
+
+        <dt class="col-sm-3">Модель:</dt>
+        <dd class="col-sm-9">@Model.Model?.Manufacturer @Model.Model?.Name</dd>
+
+        <dt class="col-sm-3">Владелец:</dt>
+        <dd class="col-sm-9">@Model.Customer?.FullName</dd>
+
+        <dt class="col-sm-3">Телефон владельца:</dt>
+        <dd class="col-sm-9">@Model.Customer?.Phone</dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактировать</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+</div>

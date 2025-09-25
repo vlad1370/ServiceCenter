@@ -1,0 +1,27 @@
+﻿@model FaultType
+@{
+    ViewData["Title"] = "Подробности неисправности";
+}
+
+<h2>Подробности вида неисправности</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Описание:</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3">Методы ремонта:</dt>
+        <dd class="col-sm-9">@Model.RepairMethods</dd>
+
+        <dt class="col-sm-3">Стоимость ремонта:</dt>
+        <dd class="col-sm-9">@Model.RepairCost.ToString("N2")</dd>
+
+        <dt class="col-sm-3">Модель автомобиля:</dt>
+        <dd class="col-sm-9">@Model.Model?.Manufacturer @Model.Model?.Name</dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактировать</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+</div>

@@ -1,0 +1,57 @@
+﻿@model RepairableModel
+@{
+    ViewData["Title"] = "Подробности модели";
+}
+
+<h2>Подробности модели автомобиля @Model.Manufacturer @Model.Name</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">Производитель:</dt>
+        <dd class="col-sm-9">@Model.Manufacturer</dd>
+
+        <dt class="col-sm-3">Модель:</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">Особенности:</dt>
+        <dd class="col-sm-9">@Model.Features</dd>
+    </dl>
+</div>
+
+<div class="col-md-6">
+    @if (Model.FaultTypes != null && Model.FaultTypes.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Неисправность</th>
+                        <th>Метод ремонта</th>
+                        <th>Стоимость</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var fault in Model.FaultTypes)
+                    {
+                        <tr>
+                            <td>@fault.Description</td>
+                            <td>@fault.RepairMethods</td>
+                            <td>@fault.RepairCost.ToString("N2") руб.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Для этой модели пока не добавлены виды неисправностей
+        </div>
+    }
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактировать</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+</div>

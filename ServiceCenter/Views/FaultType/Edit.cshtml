@@ -1,0 +1,42 @@
+﻿@model FaultType
+@{
+    ViewData["Title"] = "Редактировать неисправность";
+    var models = ViewData["ModelId"] as SelectList;
+}
+
+<h2>Редактировать вид неисправности</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label">Описание</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RepairMethods" class="control-label">Методы ремонта</label>
+        <textarea asp-for="RepairMethods" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="RepairMethods" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RepairCost" class="control-label">Стоимость ремонта</label>
+        <input asp-for="RepairCost" class="form-control" />
+        <span asp-validation-for="RepairCost" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ModelId" class="control-label">Модель автомобиля</label>
+        <select asp-for="ModelId" class="form-control" asp-items="models">
+            <option value="">-- Выберите модель --</option>
+        </select>
+        <span asp-validation-for="ModelId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Сохранить" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+    </div>
+</form>

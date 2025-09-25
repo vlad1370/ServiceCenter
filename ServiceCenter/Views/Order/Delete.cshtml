@@ -1,0 +1,52 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Удалить заказ";
+}
+
+<h2>Удалить заказ #@Model.Id</h2>
+
+<h3>Вы уверены, что хотите удалить этот заказ?</h3>
+
+<div class="alert alert-warning">
+    <strong>Внимание!</strong> Это действие нельзя отменить. Все данные заказа будут удалены.
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Информация о заказе</h4>
+        <dl class="row">
+            <dt class="col-sm-4">Дата заказа:</dt>
+            <dd class="col-sm-8">@Model.OrderDate.ToString("dd.MM.yyyy")</dd>
+
+            <dt class="col-sm-4">Клиент:</dt>
+            <dd class="col-sm-8">@Model.Customer?.FullName</dd>
+
+            <dt class="col-sm-4">Автомобиль:</dt>
+            <dd class="col-sm-8">@Model.CarSerialNumber</dd>
+
+            <dt class="col-sm-4">Сотрудник:</dt>
+            <dd class="col-sm-8">@Model.Employee?.FullName</dd>
+
+            <dt class="col-sm-4">Стоимость:</dt>
+            <dd class="col-sm-8">@Model.TotalPrice.ToString("N2")</dd>
+        </dl>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Неисправности</h4>
+        <ul>
+            @foreach (var orderFault in Model.OrderFaults)
+            {
+                <li>@orderFault.FaultType.Description</li>
+            }
+        </ul>
+    </div>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group mt-3">
+        <input type="submit" value="Удалить" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </div>
+</form>
