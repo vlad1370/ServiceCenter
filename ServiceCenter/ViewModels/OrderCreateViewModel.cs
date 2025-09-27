@@ -31,6 +31,7 @@ namespace ServiceCenter.ViewModels
 
         [Required(ErrorMessage = "Серийный номер обязателен")]
         [StringLength(17, MinimumLength = 17, ErrorMessage = "Серийный номер должен содержать 17 символов")]
+        [RegularExpression(@"^[A-Z0-9]{17}$", ErrorMessage = "Недопустимые символы в серийном номере")]
         [Display(Name = "Серийный номер автомобиля")]
         public string CarSerialNumber { get; set; }
 

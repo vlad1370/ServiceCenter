@@ -10,6 +10,7 @@ namespace ServiceCenter.Models
 
         [Required]
         [StringLength(17, MinimumLength = 17, ErrorMessage = "Серийный номер должен содержать 17 символов")]
+        [RegularExpression(@"^[A-Z0-9]{17}$", ErrorMessage = "Недопустимые символы в серийном номере")]
         public string SerialNumber { get; set; }
 
         [ForeignKey("Model")]

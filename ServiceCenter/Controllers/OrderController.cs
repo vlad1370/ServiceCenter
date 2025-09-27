@@ -78,7 +78,6 @@ namespace ServiceCenter.Controllers
 
             ViewBag.AllSerialNumbers = await _context.Cars
                 .Select(c => c.SerialNumber)
-                .Distinct()
                 .ToListAsync();
 
             await PopulateViewData(viewModel);
@@ -95,6 +94,13 @@ namespace ServiceCenter.Controllers
                 // Автоматически находим CarId по серийному номеру
                 var car = await _context.Cars
                     .FirstOrDefaultAsync(c => c.SerialNumber == viewModel.CarSerialNumber);
+
+                if (car == null)
+                {
+                    ModelState.AddModelError("CarSerialNumber", $"Автомобиль с серийным номером '{viewModel.CarSerialNumber}' не найден.");
+                    await PopulateViewData(viewModel);
+                    return View(viewModel);
+                }
 
                 // Автоматически рассчитываем стоимость на основе выбранных неисправностей
                 decimal totalPrice = 0;
@@ -180,7 +186,6 @@ namespace ServiceCenter.Controllers
 
             ViewBag.AllSerialNumbers = await _context.Cars
                 .Select(c => c.SerialNumber)
-                .Distinct()
                 .ToListAsync();
 
             if (ModelState.IsValid)
@@ -193,6 +198,17 @@ namespace ServiceCenter.Controllers
 
                     if (order == null) return NotFound();
 
+                    //Проверка есть ли машина с заданным серийным номером
+                    var car = await _context.Cars
+                        .FirstOrDefaultAsync(c => c.SerialNumber == viewModel.CarSerialNumber);
+
+                    if (car == null)
+                    {
+                        ModelState.AddModelError("CarSerialNumber", $"Автомобиль с серийным номером '{viewModel.CarSerialNumber}' не найден.");
+                        await PopulateViewData(viewModel);
+                        return View(viewModel);
+                    }
+
                     // Обновляем поля
                     order.OrderDate = viewModel.OrderDate;
                     order.ReturnDate = viewModel.ReturnDate;
@@ -200,6 +216,7 @@ namespace ServiceCenter.Controllers
                     order.WarrantyPeriodDays = viewModel.WarrantyPeriodDays;
                     order.CustomerId = viewModel.CustomerId;
                     order.CarSerialNumber = viewModel.CarSerialNumber;
+                    order.CarId = car.Id;
                     order.EmployeeId = viewModel.EmployeeId;
 
                     // Обновляем неисправности
@@ -235,7 +252,6 @@ namespace ServiceCenter.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
             await PopulateViewData(viewModel);
             return View(viewModel);
         }
