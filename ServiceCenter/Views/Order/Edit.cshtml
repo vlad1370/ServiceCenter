@@ -53,17 +53,8 @@
 
             <div class="form-group">
                 <label asp-for="SelectedFaultIds" class="control-label">Неисправности</label>
-                 <select asp-for="SelectedFaultIds" class="form-control" multiple="multiple" id="faultsSelect">
-                    @if (ViewBag.FaultTypes != null)
-                    {
-                        foreach (var item in ViewBag.FaultTypes)
-                        {
-                            <option value="@item.Value" selected="@item.Selected">@item.Text</option>
-                        }
-                    }
-                </select>
+                <select asp-for="SelectedFaultIds" class="form-control" multiple="multiple" id="faultsSelect" disabled />
                 <span asp-validation-for="SelectedFaultIds" class="text-danger"></span>
-                <small class="form-text text-muted">Удерживайте Ctrl для выбора нескольких неисправностей</small>
             </div>
 
             <div class="form-group">
@@ -106,6 +97,13 @@
             // Автоматический запуск при загрузке
             $('#HasWarranty').trigger('change');
 
+            $('#faultsSelect').on('mousedown', 'option', function(e) {
+                e.preventDefault();
+                var option = $(this);
+                option.prop('selected', !option.prop('selected'));
+                return false;
+            });
+
             $('#carSerialNumberInput').on('input', function () {
             var serialNumber = $(this).val().trim();
 
@@ -118,9 +116,7 @@
             $('#faultsMessage').html('<i class="fas fa-spinner fa-spin"></i> Загрузка неисправностей...');
             $('#faultsSelect').prop('disabled', true);
 
-            // Сохраняем текущие выбранные значения ПЕРЕД очисткой
-            var currentlySelected = $('#faultsSelect').val() || [];
-
+            // Простой GET запрос
             $.ajax({
                 url: '/Order/GetFaultsByCar',
                 type: 'GET',
@@ -130,20 +126,18 @@
                     select.empty(); // Очищаем полностью
 
                     if (data.success && data.faults && data.faults.length > 0) {
-                        // Добавляем options и восстанавливаем selected
+                        // Добавляем options
                         $.each(data.faults, function() {
-                            var isSelected = currentlySelected.includes(this.id.toString());
                             select.append($('<option>', {
                                 value: this.id,
-                                text: this.text,
-                                selected: isSelected
+                                text: this.text
                             }));
                         });
 
                         select.prop('disabled', false);
-                        $('#faultsMessage').html('Загружено ' + data.faults.length + ' неисправностей');
 
                     } else {
+                        // Если нет неисправностей или ошибка
                         select.append($('<option>', {
                             value: '',
                             text: '-- Нет доступных неисправностей --'
@@ -157,6 +151,13 @@
                 }
             });
         }
-}
+
+        // Если уже есть серийный номер (при возврате с ошибкой)
+        var initialSerial = $('#carSerialNumberInput').val();
+        if (initialSerial && initialSerial.length == 17) {
+
+            loadFaults(initialSerial);
+        }
+        });
     </script>
 }

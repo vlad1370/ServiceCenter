@@ -148,9 +148,6 @@ namespace ServiceCenter.Controllers
 
             var order = await _context.Orders
                 .Include(o => o.OrderFaults)
-                .Include(o => o.Car)
-                    .ThenInclude(c => c.Model)
-                        .ThenInclude(m => m.FaultTypes)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null) return NotFound();
@@ -280,36 +277,12 @@ namespace ServiceCenter.Controllers
 
             ViewBag.Customers = new SelectList(await _context.Customers.ToListAsync(), "Id", "FullName", viewModel?.CustomerId);
             ViewBag.Employees = new SelectList(await _context.Employees.ToListAsync(), "Id", "FullName", viewModel?.EmployeeId);
-
-            var faultTypes = await _context.FaultTypes.Include(ft => ft.Model).ToListAsync();
-            ViewBag.FaultTypes = new MultiSelectList(faultTypes, "Id", "Description", viewModel.SelectedFaultIds);
         }
 
         private async Task PopulateViewData(OrderEditViewModel viewModel)
         {
             ViewBag.Customers = new SelectList(await _context.Customers.ToListAsync(), "Id", "FullName", viewModel.CustomerId);
             ViewBag.Employees = new SelectList(await _context.Employees.ToListAsync(), "Id", "FullName", viewModel.EmployeeId);
-
-            List<FaultType> faultTypes;
-
-            if (!string.IsNullOrEmpty(viewModel.CarSerialNumber))
-            {
-                // Находим автомобиль по серийному номеру
-                var car = await _context.Cars
-                    .Include(c => c.Model)
-                        .ThenInclude(m => m.FaultTypes)  // Загружаем неисправности модели
-                    .FirstOrDefaultAsync(c => c.SerialNumber == viewModel.CarSerialNumber);
-
-                // Берем только неисправности для этой модели
-                faultTypes = car?.Model?.FaultTypes?.ToList() ?? new List<FaultType>();
-            }
-            else
-            {
-                // Если серийный номер не указан - пустой список
-                faultTypes = new List<FaultType>();
-            }
-
-            ViewBag.FaultTypes = new MultiSelectList(faultTypes, "Id", "Description", viewModel.SelectedFaultIds);
         }
 
         // AJAX метод для проверки серийного номера
