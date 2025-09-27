@@ -27,7 +27,17 @@
 
             <div class="form-group">
                 <label asp-for="CarSerialNumber" class="control-label">Серийный номер автомобиля</label>
-                <input asp-for="CarSerialNumber" class="form-control" id="carSerialNumberInput" />
+                <input asp-for="CarSerialNumber" class="form-control" list="allSerialNumbers" id="carSerialNumberInput"
+                       autocomplete="off" />
+                <datalist id="allSerialNumbers">
+                    @if (ViewBag.AllSerialNumbers != null)
+                    {
+                        foreach (var num in ViewBag.AllSerialNumbers)
+                        {
+                            <option value="@num">@num</option>
+                        }
+                    }
+                </datalist>
                 <span asp-validation-for="CarSerialNumber" class="text-danger"></span>
             </div>
 

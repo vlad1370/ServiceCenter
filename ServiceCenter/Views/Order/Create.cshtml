@@ -19,11 +19,15 @@
 
             <div class="form-group">
                 <label asp-for="CarSerialNumber" class="control-label">Серийный номер автомобиля</label>
-                <input asp-for="CarSerialNumber" class="form-control" list="serialNumbers" id="carSerialNumberInput"/>
-                <datalist id="serialNumbers">
-                    @foreach (var num in ViewBag.AvailableSerialNumbers)
+                <input asp-for="CarSerialNumber" class="form-control" list="allSerialNumbers" id="carSerialNumberInput"
+                       autocomplete="off" />
+                <datalist id="allSerialNumbers">
+                    @if (ViewBag.AllSerialNumbers != null)
                     {
-                        <option value="@num"></option>
+                        foreach (var num in ViewBag.AllSerialNumbers)
+                        {
+                            <option value="@num">@num</option>
+                        }
                     }
                 </datalist>
                 <span asp-validation-for="CarSerialNumber" class="text-danger"></span>
@@ -78,6 +82,12 @@
     <div class="form-group mt-3">
         <input type="submit" value="Создать заказ" class="btn btn-primary" />
         <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+        <a asp-controller="Customer" asp-action="Create" class="btn btn-success">
+            <i class="fas fa-plus"></i> Добавить нового клиента
+        </a>
+        <a asp-controller="Car" asp-action="Create" class="btn btn-success">
+            <i class="fas fa-plus"></i> Добавить новый авто
+        </a>
     </div>
 </form>
 

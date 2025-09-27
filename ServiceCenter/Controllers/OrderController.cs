@@ -4,10 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using ServiceCenter.Data;
 using ServiceCenter.Models;
 using ServiceCenter.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ServiceCenter.Controllers
 {
@@ -79,6 +75,11 @@ namespace ServiceCenter.Controllers
             {
                 OrderDate = DateTime.Now
             };
+
+            ViewBag.AllSerialNumbers = await _context.Cars
+                .Select(c => c.SerialNumber)
+                .Distinct()
+                .ToListAsync();
 
             await PopulateViewData(viewModel);
             return View(viewModel);
@@ -177,6 +178,11 @@ namespace ServiceCenter.Controllers
         {
             if (id != viewModel.Id) return NotFound();
 
+            ViewBag.AllSerialNumbers = await _context.Cars
+                .Select(c => c.SerialNumber)
+                .Distinct()
+                .ToListAsync();
+
             if (ModelState.IsValid)
             {
                 try
@@ -270,11 +276,6 @@ namespace ServiceCenter.Controllers
 
         private async Task PopulateViewData(OrderCreateViewModel viewModel = null, string carSerialNumber = null)
         {
-            ViewBag.AvailableSerialNumbers = await _context.Cars
-                .Select(c => c.SerialNumber)
-                .Distinct()
-                .ToListAsync();
-
             ViewBag.Customers = new SelectList(await _context.Customers.ToListAsync(), "Id", "FullName", viewModel?.CustomerId);
             ViewBag.Employees = new SelectList(await _context.Employees.ToListAsync(), "Id", "FullName", viewModel?.EmployeeId);
         }
@@ -283,13 +284,6 @@ namespace ServiceCenter.Controllers
         {
             ViewBag.Customers = new SelectList(await _context.Customers.ToListAsync(), "Id", "FullName", viewModel.CustomerId);
             ViewBag.Employees = new SelectList(await _context.Employees.ToListAsync(), "Id", "FullName", viewModel.EmployeeId);
-        }
-
-        // AJAX метод для проверки серийного номера
-        public async Task<JsonResult> CheckSerialNumber(string serialNumber)
-        {
-            var exists = await _context.Cars.AnyAsync(c => c.SerialNumber == serialNumber);
-            return Json(new { exists = exists });
         }
 
         [HttpGet]

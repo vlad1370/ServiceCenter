@@ -32,7 +32,7 @@ namespace ServiceCenter.ViewModels
         public int CustomerId { get; set; }
 
         [Required(ErrorMessage = "Серийный номер обязателен")]
-        [StringLength(17, ErrorMessage = "Серийный номер не должен превышать 17 символов")]
+        [StringLength(17, MinimumLength = 17, ErrorMessage = "Серийный номер должен содержать 17 символов")]
         [Display(Name = "Серийный номер автомобиля")]
         public string CarSerialNumber { get; set; }
 
