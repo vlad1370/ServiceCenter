@@ -9,7 +9,7 @@ namespace ServiceCenter.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(17)]
+        [StringLength(17, MinimumLength = 17, ErrorMessage = "Серийный номер должен содержать 17 символов")]
         public string SerialNumber { get; set; }
 
         [ForeignKey("Model")]
