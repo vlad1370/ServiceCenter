@@ -154,6 +154,11 @@
                         }));
                         $('#faultsMessage').html(data.message || 'Для этого автомобиля нет характерных неисправностей');
                     }
+
+                    // АВТОМАТИЧЕСКИ ВЫБИРАЕМ ВЛАДЕЛЬЦА
+                    if (data.customerId) {
+                        $('#CustomerId').val(data.customerId);
+                    }
                 },
                 error: function(xhr, status, error) {
                     $('#faultsSelect').html('<option value="">-- Ошибка загрузки --</option>');

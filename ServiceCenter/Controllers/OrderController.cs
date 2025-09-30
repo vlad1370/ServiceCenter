@@ -157,6 +157,10 @@ namespace ServiceCenter.Controllers
                 .Include(o => o.OrderFaults)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
+            ViewBag.AllSerialNumbers = await _context.Cars
+                .Select(c => c.SerialNumber)
+                .ToListAsync();
+
             if (order == null) return NotFound();
 
             var viewModel = new OrderEditViewModel
@@ -313,6 +317,7 @@ namespace ServiceCenter.Controllers
             var car = await _context.Cars
                 .Include(c => c.Model)
                     .ThenInclude(m => m.FaultTypes)
+                .Include(c => c.Customer)
                 .FirstOrDefaultAsync(c => c.SerialNumber == serialNumber);
 
             if (car == null)
@@ -329,11 +334,21 @@ namespace ServiceCenter.Controllers
                     })
                     .ToList();
 
-                return Json(new { success = true, faults = faults });
+                return Json(new { 
+                    success = true,
+                    faults = faults,
+                    customerId = car.CustomerId,
+                    customerName = car.Customer?.FullName
+                });
             }
             else
             {
-                return Json(new { success = false, message = "Для этой модели нет характерных неисправностей" });
+                return Json(new { 
+                    success = false,
+                    message = "Для этой модели нет характерных неисправностей",
+                    customerId = car.CustomerId,
+                    customerName = car.Customer?.FullName
+                });
             }
         }
     }
