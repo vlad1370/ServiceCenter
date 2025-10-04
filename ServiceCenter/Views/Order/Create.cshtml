@@ -19,25 +19,35 @@
 
             <div class="form-group">
                 <label asp-for="CarSerialNumber" class="control-label">Серийный номер автомобиля</label>
-                <input asp-for="CarSerialNumber" class="form-control" list="allSerialNumbers" id="carSerialNumberInput"
-                       autocomplete="off" />
-                <datalist id="allSerialNumbers">
-                    @if (ViewBag.AllSerialNumbers != null)
-                    {
-                        foreach (var num in ViewBag.AllSerialNumbers)
+                <div class="input-group">
+                    <input asp-for="CarSerialNumber" class="form-control" list="allSerialNumbers" id="carSerialNumberInput"
+                          autocomplete="off" />
+                    <datalist id="allSerialNumbers">
+                        @if (ViewBag.AllSerialNumbers != null)
                         {
-                            <option value="@num">@num</option>
+                            foreach (var num in ViewBag.AllSerialNumbers)
+                            {
+                                <option value="@num">@num</option>
+                            }
                         }
-                    }
-                </datalist>
+                    </datalist>
+                    <a asp-controller="Car" asp-action="Create" class="btn btn-success ms-2">
+                        <i class="fas fa-plus"></i> Добавить новый авто
+                    </a>
+                </div>
                 <span asp-validation-for="CarSerialNumber" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label">Клиент</label>
-                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.Customers">
-                    <option value="">-- Выберите клиента --</option>
-                </select>
+                <div class="input-group">
+                    <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.Customers">
+                        <option value="">-- Выберите клиента --</option>
+                    </select>
+                    <a asp-controller="Customer" asp-action="Create" class="btn btn-success ms-2">
+                        <i class="fas fa-plus"></i> Добавить нового клиента
+                    </a>
+                </div>
                 <span asp-validation-for="CustomerId" class="text-danger"></span>
             </div>
 
@@ -82,12 +92,6 @@
     <div class="form-group mt-3">
         <input type="submit" value="Создать заказ" class="btn btn-primary" />
         <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
-        <a asp-controller="Customer" asp-action="Create" class="btn btn-success">
-            <i class="fas fa-plus"></i> Добавить нового клиента
-        </a>
-        <a asp-controller="Car" asp-action="Create" class="btn btn-success">
-            <i class="fas fa-plus"></i> Добавить новый авто
-        </a>
     </div>
 </form>
 
