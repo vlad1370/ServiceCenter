@@ -16,18 +16,26 @@ namespace ServiceCenter.Controllers
         }
 
         // GET: FaultTypes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? modelId)
         {
-            var faultTypes = await _context.FaultTypes
-                .Include(ft => ft.Model)
-                .ToListAsync();
+            // Базовый запрос
+            IQueryable<FaultType> query = _context.FaultTypes.Include(ft => ft.Model);
 
-            ViewBag.Models = new SelectList(await _context.RepairableModels.ToListAsync(), "Id", "Name");
+            // Если передан modelId - фильтруем по модели
+            if (modelId.HasValue)
+            {
+                query = query.Where(ft => ft.ModelId == modelId.Value);
+            }
+
+            var faultTypes = await query.ToListAsync();
+
+            // Загружаем все модели для фильтра
+            ViewBag.Models = new SelectList(await _context.RepairableModels.ToListAsync(), "Id", "Name", modelId);
 
             return View(faultTypes);
         }
 
-        // GET: FaultTypes/Details/5
+        // GET: FaultTypes/Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -76,7 +84,7 @@ namespace ServiceCenter.Controllers
             return View(faultType);
         }
 
-        // GET: FaultTypes/Edit/5
+        // GET: FaultTypes/Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

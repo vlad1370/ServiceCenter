@@ -21,7 +21,9 @@
                 {
                     foreach (var modelItem in modelsList)
                     {
-                        <option value="@modelItem.Value">@modelItem.Text</option>
+                        <option value="@modelItem.Value" selected="@modelItem.Selected">
+                            @modelItem.Text
+                        </option>
                     }
                 }
             </select>
@@ -57,19 +59,20 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
+                $(document).ready(function () {
             // Фильтрация при изменении выбора модели
             $('#modelFilter').change(function () {
                 var selectedModelId = $(this).val();
+                var currentUrl = new URL(window.location.href);
 
                 if (selectedModelId === '') {
-                    // Показать все строки
-                    $('#faultsTable tr').show();
+                    currentUrl.searchParams.delete('modelId');
                 } else {
-                    // Скрыть все, потом показать только нужные
-                    $('#faultsTable tr').hide();
-                    $('#faultsTable tr[data-model-id="' + selectedModelId + '"]').show();
+                    currentUrl.searchParams.set('modelId', selectedModelId);
                 }
+
+                // Переходим на тот же URL с новым параметром
+                window.location.href = currentUrl.toString();
             });
         });
     </script>
