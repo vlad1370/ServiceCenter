@@ -107,10 +107,15 @@
             // Автоматический запуск при загрузке
             $('#HasWarranty').trigger('change');
 
+            //Выбор нажатием мыши
             $('#faultsSelect').on('mousedown', 'option', function(e) {
+                var select = $(this).parent();
+                var scrollPosition = select.scrollTop();
+
                 e.preventDefault();
-                var option = $(this);
-                option.prop('selected', !option.prop('selected'));
+                this.selected = !this.selected;
+                setTimeout(() => select.scrollTop(scrollPosition), 4);
+
                 return false;
             });
 
