@@ -1,13 +1,33 @@
 ﻿@model IEnumerable<FaultType>
 @{
     ViewData["Title"] = "Виды неисправностей";
+    var modelsList = ViewBag.Models as SelectList;
 }
 
 <h2>Виды неисправностей</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Добавить неисправность</a>
-</p>
+<div class="d-flex align-items-end gap-3 mb-3">
+    <div>
+        <a asp-action="Create" class="btn btn-success">Добавить неисправность</a>
+    </div>
+
+    <!-- Фильтр по модели -->
+    <div>
+        <div class="input-group w-auto">
+            <label for="modelFilter" class="form-label"></label>
+            <select id="modelFilter" class="form-select">
+                <option value="">Все модели</option>
+                @if (modelsList != null)
+                {
+                    foreach (var modelItem in modelsList)
+                    {
+                        <option value="@modelItem.Value">@modelItem.Text</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+</div>
 
 <table class="table table-striped">
     <thead>
@@ -18,10 +38,10 @@
             <th>Действия</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="faultsTable">
         @foreach (var item in Model)
         {
-            <tr>
+            <tr data-model-id="@item.ModelId">
                 <td>@item.Description</td>
                 <td>@item.RepairCost.ToString("N2")</td>
                 <td>@item.Model?.Name</td>
@@ -34,3 +54,23 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Фильтрация при изменении выбора модели
+            $('#modelFilter').change(function () {
+                var selectedModelId = $(this).val();
+
+                if (selectedModelId === '') {
+                    // Показать все строки
+                    $('#faultsTable tr').show();
+                } else {
+                    // Скрыть все, потом показать только нужные
+                    $('#faultsTable tr').hide();
+                    $('#faultsTable tr[data-model-id="' + selectedModelId + '"]').show();
+                }
+            });
+        });
+    </script>
+}

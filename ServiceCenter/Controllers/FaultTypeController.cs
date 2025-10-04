@@ -22,6 +22,8 @@ namespace ServiceCenter.Controllers
                 .Include(ft => ft.Model)
                 .ToListAsync();
 
+            ViewBag.Models = new SelectList(await _context.RepairableModels.ToListAsync(), "Id", "Name");
+
             return View(faultTypes);
         }
 
