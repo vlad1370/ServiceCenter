@@ -21,6 +21,6 @@ namespace ServiceCenter.Models
         [Required]
         public string Position { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

@@ -1,13 +1,54 @@
 ﻿@model IEnumerable<Order>
 @{
     ViewData["Title"] = "Заказы";
+    var modelsList = ViewBag.Models as SelectList;
 }
 
 <h2>Заказы</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Создать заказ</a>
-</p>
+<form method="get">
+    <!--Поиск по дате-->
+    <div class="row g-3 mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Дата с:</label>
+            <input type="date" name="startDate" class="form-control" value="@ViewData["StartDate"]" onchange="this.form.submit()" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Дата по:</label>
+            <input type="date" name="endDate" class="form-control" value="@ViewData["EndDate"]" onchange="this.form.submit()" />
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+
+    <div class="row g-2 align-items-end mb-3">
+        <div class="col-md-2">
+            <a asp-action="Create" class="btn btn-success">Создать заказ</a>
+        </div>
+
+        <!-- Поиск по модели -->
+        <div class="col-md-3">
+            <select name="modelId" class="form-select" onchange="this.form.submit()">
+                <option value="">Все модели</option>
+                @if (modelsList != null)
+                {
+                    foreach (var modelItem in modelsList)
+                    {
+                        <option value="@modelItem.Value" selected="@modelItem.Selected">@modelItem.Text</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- Поиск по серийному номеру -->
+        <div class="col-md-5">
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Введите серийный номер..." value="@ViewData["CurrentFilter"]" />
+                <button type="submit" class="btn btn-outline-secondary">Поиск</button>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</form>
 
 <table class="table table-striped">
     <thead>

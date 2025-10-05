@@ -17,11 +17,13 @@ namespace ServiceCenter.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index(string searchString, DateTime? startDate, DateTime? endDate)
+        public async Task<IActionResult> Index(string searchString, DateTime? startDate, DateTime? endDate, int? modelId)
         {
             var orders = _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.Employee)
+                .Include(o => o.Car) 
+                .ThenInclude(c => c.Model)
                 .Include(o => o.OrderFaults)
                     .ThenInclude(of => of.FaultType)
                 .AsQueryable();
@@ -41,9 +43,18 @@ namespace ServiceCenter.Controllers
                 orders = orders.Where(o => o.OrderDate <= endDate.Value);
             }
 
+            if (modelId.HasValue)
+            {
+                orders = orders.Where(o => o.Car.ModelId == modelId.Value);
+            }
+
+            // Загружаем модели для выпадающего списка
+            ViewBag.Models = new SelectList(await _context.RepairableModels.ToListAsync(), "Id", "Name", modelId);
+
             ViewData["CurrentFilter"] = searchString;
             ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
             ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
+            ViewData["SelectedModelId"] = modelId;
 
             return View(await orders.OrderByDescending(o => o.OrderDate).ToListAsync());
         }

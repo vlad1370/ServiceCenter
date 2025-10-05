@@ -11,7 +11,7 @@
         <a asp-action="Create" class="btn btn-success">Добавить неисправность</a>
     </div>
 
-    <!-- Фильтр по модели -->
+    <!-- Поиск по модели -->
     <div>
         <div class="input-group w-auto">
             <label for="modelFilter" class="form-label"></label>
@@ -59,7 +59,7 @@
 
 @section Scripts {
     <script>
-                $(document).ready(function () {
+        $(document).ready(function () {
             // Фильтрация при изменении выбора модели
             $('#modelFilter').change(function () {
                 var selectedModelId = $(this).val();

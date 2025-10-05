@@ -18,6 +18,9 @@
             <dt class="col-sm-4">Серийный номер:</dt>
             <dd class="col-sm-8">@Model.CarSerialNumber</dd>
 
+            <dt class="col-sm-4">Модель:</dt>
+            <dd class="col-sm-8">@Model.Car.Model.Name</dd>
+
             <dt class="col-sm-4">Клиент:</dt>
             <dd class="col-sm-8">@Model.Customer?.FullName</dd>
 
