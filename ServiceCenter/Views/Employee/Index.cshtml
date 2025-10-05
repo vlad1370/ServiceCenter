@@ -5,9 +5,34 @@
 
 <h2>Список сотрудников</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Добавить сотрудника</a>
-</p>
+<form method="get">
+    <div class="d-flex align-items-end gap-3 mb-3">
+        <div>
+            <a asp-action="Create" class="btn btn-success">Добавить сотрудника</a>
+        </div>
+
+        <!-- Поиск по должности -->
+        <div class="input-group w-auto">
+            <select name="positionFilter" class="form-select" onchange="this.form.submit()">
+                <option value="">Все должности</option>
+                @if (ViewBag.Positions != null)
+                {
+                    foreach (var position in ViewBag.Positions)
+                    {
+                        if (position == ViewBag.SelectedPosition)
+                        {
+                            <option value="@position" selected>@position</option>
+                        }
+                        else
+                        {
+                            <option value="@position">@position</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+</form>
 
 <table class="table table-striped">
     <thead>

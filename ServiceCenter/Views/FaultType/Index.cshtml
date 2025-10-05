@@ -12,22 +12,19 @@
     </div>
 
     <!-- Поиск по модели -->
-    <div>
-        <div class="input-group w-auto">
-            <label for="modelFilter" class="form-label"></label>
-            <select id="modelFilter" class="form-select">
-                <option value="">Все модели</option>
-                @if (modelsList != null)
+    <div class="input-group w-auto">
+        <select id="modelFilter" class="form-select">
+            <option value="">Все модели</option>
+            @if (modelsList != null)
+            {
+                foreach (var modelItem in modelsList)
                 {
-                    foreach (var modelItem in modelsList)
-                    {
-                        <option value="@modelItem.Value" selected="@modelItem.Selected">
-                            @modelItem.Text
-                        </option>
-                    }
+                    <option value="@modelItem.Value" selected="@modelItem.Selected">
+                        @modelItem.Text
+                    </option>
                 }
-            </select>
-        </div>
+            }
+        </select>
     </div>
 </div>
 

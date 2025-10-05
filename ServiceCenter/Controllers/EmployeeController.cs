@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ServiceCenter.Data;
 using ServiceCenter.Models;
 
@@ -13,9 +15,19 @@ public class EmployeeController : Controller
     }
 
     // GET: Employees
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? positionFilter)
     {
-        return View(await _context.Employees.ToListAsync());
+        var employees = _context.Employees.AsQueryable();
+
+        if (!string.IsNullOrEmpty(positionFilter))
+        {
+            employees = employees.Where(e => e.Position == positionFilter);
+        }
+
+        ViewBag.Positions = EmployeePositions.GetAll();
+        ViewBag.SelectedPosition = positionFilter;
+
+        return View(await employees.ToListAsync());
     }
 
     // GET: Employees/Details/5

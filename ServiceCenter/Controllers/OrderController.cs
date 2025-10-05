@@ -54,7 +54,6 @@ namespace ServiceCenter.Controllers
             ViewData["CurrentFilter"] = searchString;
             ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
             ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
-            ViewData["SelectedModelId"] = modelId;
 
             return View(await orders.OrderByDescending(o => o.OrderDate).ToListAsync());
         }
