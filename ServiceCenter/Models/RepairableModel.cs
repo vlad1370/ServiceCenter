@@ -8,8 +8,11 @@ namespace ServiceCenter.Models
         public int Id { get; set; }
 
         [Required]
+        [StringLength(100)]
         public string Name { get; set; }
+        [StringLength(50)]
         public string Manufacturer { get; set; }
+        [StringLength(500)]
         public string Features { get; set; }
 
         public ICollection<FaultType>? FaultTypes { get; set; }

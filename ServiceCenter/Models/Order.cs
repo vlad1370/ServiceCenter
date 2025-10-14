@@ -23,6 +23,7 @@ namespace ServiceCenter.Models
         [ForeignKey("Customer")]
         public int CustomerId { get; set; }
         public Customer? Customer { get; set; }
+        [StringLength(17)]
         public string CarSerialNumber { get; set; }
 
         [ForeignKey("Car")]

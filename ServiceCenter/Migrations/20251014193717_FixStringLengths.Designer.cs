@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServiceCenter.Data;
 
@@ -11,9 +12,11 @@ using ServiceCenter.Data;
 namespace ServiceCenter.Migrations
 {
     [DbContext(typeof(ServiceCenterDbContext))]
-    partial class ServiceCenterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251014193717_FixStringLengths")]
+    partial class FixStringLengths
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,8 +183,7 @@ namespace ServiceCenter.Migrations
 
                     b.Property<string>("CarSerialNumber")
                         .IsRequired()
-                        .HasMaxLength(17)
-                        .HasColumnType("nvarchar(17)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");

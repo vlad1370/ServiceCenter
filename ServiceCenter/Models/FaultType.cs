@@ -9,9 +9,11 @@ namespace ServiceCenter.Models
         public int Id { get; set; }
 
         [Required]
+        [StringLength(200)]
         public string Description { get; set; }
 
         [Required]
+        [StringLength(500)]
         public string RepairMethods { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
