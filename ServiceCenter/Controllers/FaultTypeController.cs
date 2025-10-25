@@ -73,6 +73,7 @@ namespace ServiceCenter.Controllers
             {
                 _context.Add(faultType);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Неисправность успешно добавлена";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -134,6 +135,7 @@ namespace ServiceCenter.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Изменения сохранены";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -173,6 +175,7 @@ namespace ServiceCenter.Controllers
             var faultType = await _context.FaultTypes.FindAsync(id);
             _context.FaultTypes.Remove(faultType);
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Неисправность удалена";
             return RedirectToAction(nameof(Index));
         }
 

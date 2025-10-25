@@ -74,6 +74,7 @@ namespace ServiceCenter.Controllers
 
                 _context.Add(car);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Автомобиль успешно добавлен";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -128,6 +129,7 @@ namespace ServiceCenter.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Изменения сохранены";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -164,6 +166,7 @@ namespace ServiceCenter.Controllers
             var car = await _context.Cars.FindAsync(id);
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Автомобиль удалён";
             return RedirectToAction(nameof(Index));
         }
 

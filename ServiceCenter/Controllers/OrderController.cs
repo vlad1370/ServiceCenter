@@ -150,7 +150,7 @@ namespace ServiceCenter.Controllers
                     }
                     await _context.SaveChangesAsync();
                 }
-
+                TempData["SuccessMessage"] = "Заказ успешно создан";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -264,6 +264,7 @@ namespace ServiceCenter.Controllers
                     if (!OrderExists(viewModel.Id)) return NotFound();
                     throw;
                 }
+                TempData["SuccessMessage"] = "Изменения сохранены";
                 return RedirectToAction(nameof(Index));
             }
             await PopulateViewData(viewModel);
@@ -296,6 +297,7 @@ namespace ServiceCenter.Controllers
             var order = await _context.Orders.FindAsync(id);
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Заказ удалён";
             return RedirectToAction(nameof(Index));
         }
 

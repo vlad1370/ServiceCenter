@@ -62,6 +62,7 @@ public class EmployeeController : Controller
         {
             _context.Add(employee);
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Сотрудник успешно добавлен";
             return RedirectToAction(nameof(Index));
         }
         return View(employee);
@@ -110,6 +111,7 @@ public class EmployeeController : Controller
                     throw;
                 }
             }
+            TempData["SuccessMessage"] = "Изменения сохранены";
             return RedirectToAction(nameof(Index));
         }
         return View(employee);
@@ -140,6 +142,7 @@ public class EmployeeController : Controller
         var employee = await _context.Employees.FindAsync(id);
         _context.Employees.Remove(employee);
         await _context.SaveChangesAsync();
+        TempData["SuccessMessage"] = "Сотрудник удалён";
         return RedirectToAction(nameof(Index));
     }
 

@@ -44,6 +44,7 @@ namespace ServiceCenter.Controllers
             return View();
         }
 
+        //POST  Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Customer customer)
@@ -52,6 +53,7 @@ namespace ServiceCenter.Controllers
             {
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Клиент успешно добавлен";
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
@@ -73,6 +75,7 @@ namespace ServiceCenter.Controllers
             return View(customer);
         }
 
+        //POST  Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Customer customer)
@@ -100,6 +103,7 @@ namespace ServiceCenter.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Изменения сохранены";
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
@@ -123,6 +127,7 @@ namespace ServiceCenter.Controllers
             return View(customer);
         }
 
+        //POST  Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -130,6 +135,7 @@ namespace ServiceCenter.Controllers
             var customer = await _context.Customers.FindAsync(id);
             _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Клиент удалён";
             return RedirectToAction(nameof(Index));
         }
 

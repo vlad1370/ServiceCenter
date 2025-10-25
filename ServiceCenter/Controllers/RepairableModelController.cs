@@ -58,6 +58,7 @@ namespace ServiceCenter.Controllers
             {
                 _context.Add(repairableModel);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Модель успешно добавлена";
                 return RedirectToAction(nameof(Index));
             }
             return View(repairableModel);
@@ -107,6 +108,7 @@ namespace ServiceCenter.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Изменения сохранены";
                 return RedirectToAction(nameof(Index));
             }
             return View(repairableModel);
@@ -138,6 +140,7 @@ namespace ServiceCenter.Controllers
             var repairableModel = await _context.RepairableModels.FindAsync(id);
             _context.RepairableModels.Remove(repairableModel);
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Модель удалена";
             return RedirectToAction(nameof(Index));
         }
 
