@@ -151,6 +151,14 @@
 
                         select.prop('disabled', false);
 
+                        //Отмечаем уже выбранные при создании заказа работы
+                        var selectedIds = @Html.Raw(Json.Serialize(Model.SelectedFaultIds));
+                        if (selectedIds && selectedIds.length > 0) {
+                            selectedIds.forEach(function(faultId) {
+                                $('#faultsSelect option[value="' + faultId + '"]').prop('selected', true);
+                            });
+                        }
+
                     } else {
                         // Если нет неисправностей или ошибка
                         select.append($('<option>', {
